@@ -1,0 +1,10 @@
+[
+  {
+    "name": "QService",
+    "class": "com.ticomgeo.fame.QService"
+  },
+  {
+    "name": "AppGeo Geo Processor Service",
+    "class": "com.ticomgeo.fame.GeoProcessorService"
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "name": "Periodic Event Provider",
+    "class": "com.ticomgeo.fame.PeriodicEventProvider"
+  },
+  {
+    "name": "PushPoint Event Provider",
+    "class": "com.ticomgeo.fame.PushPointEventProvider"
+  }
+
+]

@@ -1,0 +1,9 @@
+[
+  {
+    "name": "Generate Periodic AutoGeos",
+    "nodes": [
+      "Periodic Event Provider",
+      "PushPoint Event Provider"
+    ]
+  }
+]
