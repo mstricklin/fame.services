@@ -2,6 +2,7 @@ package com.ticomgeo.fame.descriptors;
 
 import com.ticomgeo.fame.FameDesignator;
 import com.ticomgeo.fame.FamePipelineNode;
+import com.ticomgeo.fame.InitializationParameter;
 import com.ticomgeo.fame.providers.PeriodicEventProvider;
 
 import java.util.Collection;
@@ -18,7 +19,7 @@ import java.util.Collection;
  */
 public interface FameNodeDescriptor<T extends FamePipelineNode> {
 	String getId();
-	T getRealization(Collection<InitializationParameterDescriptor> params);
+	T getInstance(Collection<InitializationParameter> params);
 	Collection<FameDesignator> getDesignators();
 	Collection<InitializationParameterDescriptor> getParameters();
 }

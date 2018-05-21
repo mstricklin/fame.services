@@ -1,5 +1,7 @@
 package com.ticomgeo.fame.descriptors;
 
+import com.google.common.base.Joiner;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -22,34 +24,33 @@ public interface DataProductFormat {
 
 
 	// instances...in the "real" world, would we load these from configuration?
-	DataProductFormat APP_GEO = new DataProductFormatImpl("AppGeo", "2.3.0.0");
-	DataProductFormat FAME = new DataProductFormatImpl("Fame", "1.0.0");
-	DataProductFormat TRS = new DataProductFormatImpl("Trs", "1.3.8");
-	DataProductFormat U_FORMAT = new DataProductFormatImpl("uFormat", "???");
+	DataProductFormat APP_GEO = of("AppGeo", "2.3.0.0");
+	DataProductFormat FAME = of("Fame", "1.0.0");
+	DataProductFormat TRS = of("Trs", "1.3.8");
+	DataProductFormat U_FORMAT = of("uFormat", "???");
 
 	// In the "real" world, there would be a registry of product formats
 	// the universe of types is dynamic, but probably static across runs (?)
 	Collection<DataProductFormat> FORMATS = Arrays.asList(APP_GEO, FAME, TRS, U_FORMAT);
 
+	static DataProductFormat of(String name, String... apiVersions) {
+		return new DataProductFormat() {
+			@Override
+			public String getName() {
+				return name;
+			}
 
-	// an implementation, stuck here for convenience.
-	class DataProductFormatImpl implements DataProductFormat {
-		private DataProductFormatImpl(String name_, String... apiVersions_) {
-			this.name = name_;
-			this.apiVersions = Arrays.asList(apiVersions_);
-		}
+			@Override
+			public Collection<String> getApiVersions() {
+				return Arrays.asList(apiVersions);
+			}
 
-		@Override
-		public String getName() {
-			return name;
-		}
-
-		@Override
-		public Collection<String> getApiVersions() {
-			return apiVersions;
-		}
-
-		private final String name;
-		private final Collection<String> apiVersions;
+			@Override
+			public String toString() {
+				return name + " [" + COMMA_JOINER.join(apiVersions) + "]";
+			}
+		};
 	}
+
+	Joiner COMMA_JOINER = Joiner.on(", ").skipNulls();
 }

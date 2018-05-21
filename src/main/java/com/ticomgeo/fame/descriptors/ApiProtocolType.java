@@ -1,5 +1,7 @@
 package com.ticomgeo.fame.descriptors;
 
+import com.google.common.base.Joiner;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -20,33 +22,35 @@ public interface ApiProtocolType {
 	Collection<String> getApiVersions();
 
 	// instances...in the "real" world, would we load these from configuration?
-	ApiProtocolType ANY = new ApiProtocolTypeImpl("Any", "N/A");
-	ApiProtocolType APP_GEO = new ApiProtocolTypeImpl("AppGeo", "2.3.0.0");
-	ApiProtocolType FAME = new ApiProtocolTypeImpl("Fame", "1.0.0");
-	ApiProtocolType TRS = new ApiProtocolTypeImpl("Trs", "1.3.8");
+	ApiProtocolType ANY = of("Any", "N/A");
+	ApiProtocolType APP_GEO = of("AppGeo", "2.3.0.0");
+	ApiProtocolType FAME = of("Fame", "1.0.0");
+	ApiProtocolType TRS = of("Trs", "1.3.8");
 
 	// In the "real" world, there would be a registry of protocol types
 	// the universe of types is dynamic, but probably static across runs (?)
 	Collection<ApiProtocolType> PROTOCOL_TYPES = Arrays.asList(ANY, APP_GEO, FAME, TRS);
 
 
-	// an implementation, stuck here for convenience.
-	class ApiProtocolTypeImpl implements ApiProtocolType {
-		private ApiProtocolTypeImpl(String name_, String... apiVersions_) {
-			this.name = name_;
-			this.apiVersions = Arrays.asList(apiVersions_);
-		}
-		@Override
-		public String getName() {
-			return null;
-		}
+	static ApiProtocolType of(String name, String... apiVersions) {
+		return new ApiProtocolType() {
+			@Override
+			public String getName() {
+				return name;
+			}
 
-		@Override
-		public Collection<String> getApiVersions() {
-			return apiVersions;
-		}
-		private final String name;
-		private final Collection<String> apiVersions;
+			@Override
+			public Collection<String> getApiVersions() {
+				return Arrays.asList(apiVersions);
+			}
+
+			@Override
+			public String toString() {
+				return name + " [" + COMMA_JOINER.join(apiVersions) + "]";
+			}
+		};
 	}
+
+	Joiner COMMA_JOINER = Joiner.on(", ").skipNulls();
 
 }

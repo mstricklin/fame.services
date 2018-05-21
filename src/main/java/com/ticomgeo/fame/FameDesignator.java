@@ -28,25 +28,21 @@ public interface FameDesignator {
 	String getValue();
 
 	static FameDesignator of(String designator, String value) {
-		return new FameDesignatorImpl(designator, value);
-	}
+		return new FameDesignator() {
+			@Override
+			public String getDesignator() {
+				return designator;
+			}
 
-	class FameDesignatorImpl implements FameDesignator {
-		private FameDesignatorImpl(String designator_, String value_) {
-			this.designator = designator_;
-			this.value = value_;
-		}
+			@Override
+			public String getValue() {
+				return value;
+			}
 
-		@Override
-		public String getDesignator() {
-			return designator;
-		}
-
-		@Override
-		public String getValue() {
-			return value;
-		}
-		private final String designator;
-		private final String value;
+			@Override
+			public String toString() {
+			    return designator + ":" + value;
+			}
+		};
 	}
 }

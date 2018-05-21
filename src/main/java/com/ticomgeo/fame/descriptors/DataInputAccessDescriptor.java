@@ -18,4 +18,26 @@ public interface DataInputAccessDescriptor {
 
 	// The API protocol requirement for a provider of this data input
 	ApiProtocolType getProtocol();
+
+	static DataInputAccessDescriptor of(DataProductType dataProductType,
+								  DataProductionType dataProductionType,
+								  ApiProtocolType apiProtocolType) {
+		return new DataInputAccessDescriptor() {
+
+			@Override
+			public DataProductType getType() {
+				return dataProductType;
+			}
+
+			@Override
+			public DataProductionType getProduction() {
+				return dataProductionType;
+			}
+
+			@Override
+			public ApiProtocolType getProtocol() {
+				return apiProtocolType;
+			}
+		};
+	}
 }

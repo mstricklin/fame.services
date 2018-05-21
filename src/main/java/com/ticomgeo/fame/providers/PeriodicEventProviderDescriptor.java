@@ -2,26 +2,40 @@ package com.ticomgeo.fame.providers;
 
 import com.google.common.base.Joiner;
 import com.ticomgeo.fame.FameDesignator;
-import com.ticomgeo.fame.NodeDescriptorTag;
+import com.ticomgeo.fame.InitializationParameter;
 import com.ticomgeo.fame.descriptors.*;
-import com.ticomgeo.fame.services.QService;
+import com.ticomgeo.fame.types.Duration;
+import com.ticomgeo.fame.types.Period;
+import com.ticomgeo.fame.types.UnsignedInt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-@NodeDescriptorTag(service = QService.class,
-        id = "PeriodicEventProvider",
-        realization = PeriodicEventProvider.class)
+// A.K.A. Node E
 public class PeriodicEventProviderDescriptor implements ServiceProviderDescriptor<PeriodicEventProvider> {
+    @SuppressWarnings("unused")
+    private static final Logger CLASS_LOGGER = LoggerFactory.getLogger((new Throwable()).getStackTrace()[0].getClassName());
+
+    @SuppressWarnings("unused")
+    private static final String NEWLINE = System.getProperty("line.separator");
+
     @Override
     public String getId() {
-        return "PeriodicEventProvider";
+        return PeriodicEventProvider.ID;
     }
 
     @Override
-    public PeriodicEventProvider getRealization(Collection<InitializationParameterDescriptor> params) {
-        // TODO: pass params to ctor...
-        return new PeriodicEventProvider(10);
+    public PeriodicEventProvider getInstance(Collection<InitializationParameter> params) {
+        InstanceBuilder builder = of();
+        for (InitializationParameter ip: params) {
+            if ("period".equalsIgnoreCase(ip.getName()))
+                builder.period( (Period) ip.getValue());
+            else if ("duration".equalsIgnoreCase(ip.getName()))
+                builder.duration( (Duration) ip.getValue());
+        }
+        return builder.build();
     }
 
     @Override
@@ -32,9 +46,9 @@ public class PeriodicEventProviderDescriptor implements ServiceProviderDescripto
 
     @Override
     public Collection<InitializationParameterDescriptor> getParameters() {
-        return Arrays.asList(InitializationParameterDescriptor.of("period", true, "UnsignedInt"),
-                             InitializationParameterDescriptor.of("duration", false, "Duration")
-                );
+        return Arrays.asList(InitializationParameterDescriptor.of("period", true, Period.class),
+                InitializationParameterDescriptor.of("duration", false, Duration.class)
+        );
     }
 
     @Override
@@ -57,10 +71,40 @@ public class PeriodicEventProviderDescriptor implements ServiceProviderDescripto
         return Arrays.asList(DataProductFormat.FAME);
     }
 
+    // ================================
+    public static InstanceBuilder of() {
+        return new InstanceBuilder();
+    }
 
-    Joiner COMMA_JOINER = Joiner.on(", ");
+    public static class InstanceBuilder {
+        private InstanceBuilder() {
+        }
+
+        public InstanceBuilder period(Period period) {
+            this.period = period;
+            return this;
+        }
+
+        public InstanceBuilder duration(Duration duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public PeriodicEventProvider build() {
+            // TODO: perform validation here...
+            return new PeriodicEventProvider(period, duration);
+        }
+
+        private Period period;
+        private Duration duration;
+    }
+    // ================================
+
+    private static final Joiner COMMA_JOINER = Joiner.on(", ");
+
     @Override
     public String toString() {
         return getId() + " [" + COMMA_JOINER.join(getParameters()) + "]";
     }
+
 }

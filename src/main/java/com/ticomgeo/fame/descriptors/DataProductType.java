@@ -1,7 +1,10 @@
 package com.ticomgeo.fame.descriptors;
 
+import com.google.common.base.Joiner;
+
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Function;
 
 import static com.ticomgeo.fame.descriptors.DataProductType.ProcessingActivityType.PROSECUTE;
 import static com.ticomgeo.fame.descriptors.DataProductType.ProcessingActivityType.SEARCH;
@@ -29,43 +32,43 @@ public interface DataProductType {
 	//   Area of Interest
 
 	// instances...in the "real" world, would we load these from configuration?
-	DataProductType AUDIO = new DataProductTypeImpl("audio", PROSECUTE);
-	DataProductType DETECT = new DataProductTypeImpl("detect", SEARCH, PROSECUTE);
-	DataProductType GEOLOCATION = new DataProductTypeImpl("geolocation", PROSECUTE);
-	DataProductType IMAGE = new DataProductTypeImpl("image", SEARCH, PROSECUTE);
-	DataProductType LOB = new DataProductTypeImpl("lob", SEARCH, PROSECUTE);
-	DataProductType MEASUREMENT = new DataProductTypeImpl("measurement", SEARCH, PROSECUTE);
-	DataProductType METRIC = new DataProductTypeImpl("metric", PROSECUTE);
-	DataProductType NAVIGATION = new DataProductTypeImpl("navigation", PROSECUTE);
-	DataProductType IQ = new DataProductTypeImpl("iq", PROSECUTE);
-	DataProductType PSD = new DataProductTypeImpl("psd", SEARCH, PROSECUTE);
-	DataProductType TIP = new DataProductTypeImpl("tip", SEARCH, PROSECUTE);
-	DataProductType TIMESTAMP = new DataProductTypeImpl("timestamp", SEARCH, PROSECUTE);
+    DataProductType PUSHPOINT = of("pushpoint", PROSECUTE);
+    DataProductType AUDIO = of("audio", PROSECUTE);
+	DataProductType DETECT = of("detect", SEARCH, PROSECUTE);
+	DataProductType GEOLOCATION = of("geolocation", PROSECUTE);
+	DataProductType IMAGE = of("image", SEARCH, PROSECUTE);
+	DataProductType LOB = of("lob", SEARCH, PROSECUTE);
+	DataProductType MEASUREMENT = of("measurement", SEARCH, PROSECUTE);
+	DataProductType METRIC = of("metric", PROSECUTE);
+	DataProductType NAVIGATION = of("navigation", PROSECUTE);
+	DataProductType IQ = of("iq", PROSECUTE);
+	DataProductType PSD = of("psd", SEARCH, PROSECUTE);
+	DataProductType TIP = of("tip", SEARCH, PROSECUTE);
+    DataProductType TIMESTAMP = of("timestamp", SEARCH, PROSECUTE);
+    DataProductType TIMER = of("timer", SEARCH, PROSECUTE);
 
 	// In the "real" world, there would be a registry of product types
 	// the universe of types is dynamic, but probably static across runs (?)
 	Collection<DataProductType> PRODUCT_TYPES = Arrays.asList(AUDIO, DETECT, GEOLOCATION, IMAGE, LOB, MEASUREMENT,
 	                                                          METRIC, NAVIGATION, IQ, PSD, TIP, TIMESTAMP);
 
+	static DataProductType of(String name, ProcessingActivityType... activityTypes) {
+	    return new DataProductType() {
+            @Override
+            public String getName() {
+                return name;
+            }
 
-	class DataProductTypeImpl implements DataProductType {
-		DataProductTypeImpl(String name_, ProcessingActivityType... activityTypes_) {
-			this.name = name_;
-			this.activityTypes = Arrays.asList(activityTypes_);
-		}
+            @Override
+            public Collection<ProcessingActivityType> getProcessingActivities() {
+                return Arrays.asList(activityTypes);
+            }
+            @Override
+            public String toString() {
+                return name + ": [" + COMMA_JOINER.join(activityTypes) + "]";
+            }
+        };
+    }
 
-		@Override
-		public String getName() {
-			return name;
-		}
-
-		@Override
-		public Collection<ProcessingActivityType> getProcessingActivities() {
-			return activityTypes;
-		}
-
-		private final String name;
-		private final Collection<ProcessingActivityType> activityTypes;
-
-	}
+    Joiner COMMA_JOINER = Joiner.on(", ").skipNulls();
 }

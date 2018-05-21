@@ -20,13 +20,6 @@ public class ServiceRegistry {
 		String classname;
 	}
 
-	ServiceRegistry(URL svcConfig) {
-		ByteSource bs = Resources.asByteSource(svcConfig);
-
-		Gson gson = new Gson();
-		gson.fromJson(bs, Integer.class);
-	}
-
 	ServiceRegistry(String packageName) {
 		services = Maps.toMap(serviceDescriptors(packageName), ServiceDescriptor::getRealization);
 	}
